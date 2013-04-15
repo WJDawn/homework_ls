@@ -112,7 +112,7 @@ void display_dir( int flag_param, char *path )
 			display_single( filenames[i] );
 		}
 		else {
-			display(flag_param, temp);
+			display(flag_param, filenames[i]);
 		}
 	}
 
@@ -192,21 +192,77 @@ void display_attribute( struct stat buf, char * name )
 	int bit = 0;
 	int i;
 	// 获取并打印文件所有者的权限
-	for (i = 0; i < 9; i++) {
+	/*	for (i = 0; i < 9; i++) {
 		bit = buf.st_mode & ( 1 << ( 8 - i ) );
 		if (0 == bit) {
-			printf( "-" );
+		printf( "-" );
 		} else {
-			if (0 == ( i % 3 )) {
-				printf( "r" );
-			} else if (1 == ( i % 3 )) {
-				printf( "w" );
-			} else if (2 == ( i % 3 )) {
-				printf( "x" );
-			}
+		if (0 == ( i % 3 )) {
+		printf( "r" );
+		} else if (1 == ( i % 3 )) {
+		printf( "w" );
+		} else if (2 == ( i % 3 )) {
+		if (S_ISU(buf.st_mode))
+		printf( "s" );
+		else if ( S_ISG(buf.st_mode))
+		printf( "S" );
+		else if ( S_ISS(buf.st_mode))
+		printf( "t" );
+		else
+		printf( "x" );
 		}
+		}
+		}*/
+	if (buf.st_mode & S_IRUSR)
+	  printf( "r" );
+	else 
+	  printf( "-" );
+	if (buf.st_mode & S_IWUSR)
+	  printf( "w" );
+	else
+	  printf( "-" );
+	if (buf.st_mode & S_IXUSR) {
+		if (S_ISU(buf.st_mode))
+		  printf( "s" );
+		else 
+		  printf( "x" );
 	}
-	printf( " " );
+	else 
+	  printf( "-" );
+	
+	if (buf.st_mode & S_IRGRP)
+	  printf( "r" );
+	else 
+	  printf( "-" );
+	if (buf.st_mode & S_IWGRP)
+	  printf( "w" );
+	else 
+	  printf( "-" );
+	if (buf.st_mode & S_IXGRP) {
+		if (S_ISG(buf.st_mode))
+		  printf( "S" );
+		else
+		  printf( "x" );
+	}
+	else 
+	  printf( "-" );
+
+	if (buf.st_mode & S_IROTH)
+	  printf( "r" );
+	else 
+	  printf( "-" );
+	if (buf.st_mode & S_IWOTH)
+	  printf( "w" );
+	else 
+	  printf( "-" );
+	if (buf.st_mode & S_IXOTH) {
+		if (S_ISS(buf.st_mode))
+		  printf( "t" );
+		else
+		  printf( "x" );
+	}
+	else 
+	  printf( "-" );
 
 	// 根据uid与gid获取文件所有者打用户名与组名
 	psd = getpwuid( buf.st_uid );
@@ -252,7 +308,8 @@ void display( int flag, char * pathname )
 			j = 0;
 			continue;
 		}
-		name[j++] = pathname[i];
+		name[j] = pathname[i];
+		j++;
 	}
 	name[j] = '\0';
 
@@ -264,7 +321,7 @@ void display( int flag, char * pathname )
 	switch (flag) {
 		case PARAM_NONE: 	// 没有任何选项
 			if (name[0] != '.') {
-				display_single( name );
+				display_single( pathname );
 			}
 			break;
 		case PARAM_I:
@@ -276,7 +333,7 @@ void display( int flag, char * pathname )
 			display_inode( buf, name );
 			break;
 		case PARAM_A:
-			display_single( name );
+			display_single( pathname );
 			break;
 
 		case PARAM_L:

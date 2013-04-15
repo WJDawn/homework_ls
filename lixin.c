@@ -75,7 +75,7 @@ int main( int argc, char **argv )
 	do {
 		// 如果不是目标文件名或目录，解析下一个命令行参数
 		if (argv[i][0] == '-') {
-			i++;
+			++i;
 			continue;
 		} else {
 			strncpy( path, argv[i], strlen( argv[i] ) );

@@ -10,6 +10,11 @@
 #define PARAM_S 		8
 #define PARAM_R 		9
 #define MAXROWLEN 	 	80
+#define MASK 			07000
+
+#define S_ISU(m) 		(((m) & MASK) == S_ISUID)
+#define S_ISG(m) 		(((m) & MASK) == S_ISGID)
+#define S_ISS(m) 		(((m) & MASK) == S_ISVTX)
 
 int 	row_leave;
 int 	file_maxlen;
